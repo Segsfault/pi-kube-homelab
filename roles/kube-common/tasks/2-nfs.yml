@@ -1,0 +1,9 @@
+---
+- name: Mount nfs
+  become: true
+  mount:
+    path: "{{ nfs_mount_dir }}"
+    src: "{{ nfs_server_ip }}:{{ nfs_mount_dir }}"
+    fstype: nfs
+    opts: defaults
+    state: mounted

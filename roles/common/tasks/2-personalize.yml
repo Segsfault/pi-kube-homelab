@@ -1,0 +1,50 @@
+# Update the locale information
+- name: Remove default locale
+  become: yes
+  replace:
+    path: /etc/locale.gen
+    regexp: '^en_GB.UTF-8 UTF-8'
+    replace: '# en_GB.UTF-8 UTF-8'
+
+- name: Enable new locale
+  become: yes
+  replace:
+    path: /etc/locale.gen
+    regexp: '^# {{ locale }} {{ charset }}'
+    replace: '{{ locale }} {{ charset }}'
+  register: locale_result
+
+- name: Generate Locale
+  become: yes
+  command: locale-gen
+  when: locale_result.changed
+
+- name: Set Locale
+  become: yes
+  command: "update-locale LC_ALL={{ locale }} LANG={{ locale }}"
+  when: locale_result.changed
+
+# Update timezone
+- name: Set Timezone
+  become: yes
+  command: 'timedatectl set-timezone {{ timezone }}'
+
+- name: disable wifi and bluetooth
+  become: yes
+  blockinfile:
+    path: /boot/config.txt
+    block: |
+      dtoverlay=pi3-disable-wifi
+      dtoverlay=pi3-disable-bt
+
+- name: remove wifi country check
+  become: yes
+  file:
+    path: /etc/profile.d/wifi-country.sh
+    state: absent
+    
+- name: remove pi password change check
+  become: yes
+  file:
+    path: /etc/profile.d/sshpwd.sh
+    state: absent

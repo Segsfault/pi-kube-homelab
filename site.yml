@@ -1,0 +1,36 @@
+---
+- name: Bootstrap all PIs
+  hosts: all
+  become: yes
+  vars:
+    ansible_connection: paramiko_ssh
+    ansible_user: pi
+    ansible_ssh_pass: raspberry
+  roles:
+    - bootstrap
+
+- name: Configuring NFS on controller
+  hosts: controller
+  become: yes
+  vars:
+    ansible_user: "{{ pi_user }}"
+  roles:
+    - controller
+
+- name: Configuring all PIs
+  hosts: all
+  become: yes
+  vars:
+    ansible_user: "{{ pi_user }}"
+  roles:
+    - common
+
+- name: Configure PIs in the k3 cluster
+  hosts: kube_master:kube_workers
+  become: yes
+  vars:
+    ansible_user: "{{ pi_user }}"
+  roles:
+    - kube-common
+
+#- import_playbook: kube.yml

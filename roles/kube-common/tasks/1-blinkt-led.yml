@@ -1,0 +1,41 @@
+---
+- name: Install blinkt package for py3
+  apt:
+    name: python3-blinkt
+    state: present
+
+- name: Install psutil package for py3
+  apt:
+    name: python3-psutil
+    state: present
+
+- name: Copy led stats into position
+  copy:
+    src: ledstats
+    dest: /usr/local/bin/ledstats
+    owner: "{{ pi_user }}"
+    group: "{{ pi_user }}"
+    mode: 0755
+
+- name: Configure supervisor for led stats
+  blockinfile:
+    path: /etc/supervisor/conf.d/ledstats.conf
+    create: yes
+    owner: "{{ pi_user }}"
+    group: "{{ pi_user }}"
+    block: |
+      [program:ledstats]
+      command=/usr/local/bin/ledstats
+      directory=/tmp
+      autostart=true
+      autorestart=true
+      startretries=3
+      stderr_logfile=/var/log/ledstats.err.log
+      stdout_logfile=/var/log/ledstats.out.log
+      user=root
+
+- name: Read in supervisor config
+  command: supervisorctl reread
+
+- name: Update supervisor config
+  command: supervisorctl update

@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+import time
+import blinkt
+import psutil
+from math import floor
+
+
+def show_graph(fraction, rgb, brightness):
+    """Simple function to display normalized value on 4 LEDs"""
+    
+    n = fraction*8
+    for x in range(8):
+        if n < 0:
+            blinkt.set_pixel(x, 0, 0, 0, 0)
+        else:
+            blinkt.set_pixel(x, rgb[x][0], rgb[x][1], rgb[x][2], brightness)
+        n -= 1
+    blinkt.show()
+
+
+if __name__ == "__main__":
+
+    blinkt.set_clear_on_exit()  # clear LEDs if exited
+
+    gradient_rgb = [  # green, yellow, orange, red
+        (0, 255, 0),
+        (0, 255, 0),
+        (255, 255, 0),
+        (255, 255, 0),
+        (255, 70, 0),
+        (255, 70, 0),      
+        (255, 0, 0),
+        (255, 0, 0)
+    ]
+
+    bright_level = 0.1
+
+    while True:
+        v = psutil.cpu_percent() / 100.0
+        show_graph(v, gradient_rgb, bright_level)
+        time.sleep(0.1)

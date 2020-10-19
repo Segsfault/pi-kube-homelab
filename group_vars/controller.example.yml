@@ -1,0 +1,4 @@
+storage_device: /dev/sda1
+storage_mount: /mnt/homelab
+storage_uuid: faaaaaaa-3333-4444-8888-efefefefefef
+nfs_export: "{{ storage_mount }} 10.10.1.0/24(rw,root_squash)"

@@ -1,0 +1,18 @@
+- name: update hostname
+  become: yes
+  command: "hostname {{ pi_hostname }}"
+
+- name: delete dhcp leases
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - /var/lib/dhcp/dhclient.leases
+  - /var/lib/dhcpcd5/dhcpcd-eth0.lease
+
+- name: restart rpcbind
+  systemd:
+    name: rpcbind
+    state: restarted
+  become: yes

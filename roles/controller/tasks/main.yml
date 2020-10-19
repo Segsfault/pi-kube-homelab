@@ -1,0 +1,36 @@
+---
+- name: Install some needed packages if they aren't already
+  become: yes
+  package:
+    name:
+      - rpcbind
+      - nfs-common 
+      - nfs-kernel-server
+    state: present
+
+#- name: Change fstab to automount each boot
+#  become: yes
+#  lineinfile:
+#    path: /etc/fstab
+#    line: "UUID={{ storage_uuid }} {{ storage_mount }} ext4 defaults 0 0"
+
+- name: Mounting "{{ storage_uuid }}" to "{{ storage_mount }}"
+  become: yes
+  mount:
+    path: "{{ storage_mount }}"
+    src: "UUID={{ storage_uuid }}"
+    fstype: ext4
+    opts: defaults
+    state: mounted
+
+- name: Change exports file for nfs
+  become: yes
+  lineinfile:
+    path: /etc/exports
+    line: "{{ nfs_export }}"    
+
+- name: Restart NFS
+  become: yes
+  service:
+    name: nfs-server
+    state: restarted    

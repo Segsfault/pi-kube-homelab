@@ -1,0 +1,16 @@
+---
+- include_tasks: 1-networking.yml
+- include_tasks: 2-personalize.yml
+- include_tasks: 3-apt.yml
+
+- name: reboot pi
+  reboot:
+    connect_timeout: 5
+    post_reboot_delay: 30
+
+- name: Delete the pi user
+  become: yes
+  user:
+    name: pi
+    state: absent
+    remove: yes

@@ -1,0 +1,19 @@
+# Update packages and install some common packages
+- name: apt-get update
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: apt-get dist-upgrade
+  become: yes
+  apt:
+    upgrade: dist
+
+- name: Install some needed packages
+  become: yes
+  package:
+    name: 
+      - supervisor
+      - nfs-common
+      - rpcbind
+    state: present

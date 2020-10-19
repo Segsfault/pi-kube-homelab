@@ -1,0 +1,9 @@
+---
+- include_tasks: 1-blinkt-led.yml
+- include_tasks: 2-nfs.yml
+- include_tasks: 3-cgroup.yml
+
+- name: reboot pi to make sure mounts and nfs take hold
+  reboot:
+    connect_timeout: 5
+    post_reboot_delay: 30

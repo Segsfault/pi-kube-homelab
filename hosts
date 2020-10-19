@@ -1,0 +1,11 @@
+[controller]
+control ansible_host=10.10.1.10
+
+[kube_master]
+kube-0 ansible_host=10.10.1.100
+
+[kube_workers]
+kube-1 ansible_host=10.10.1.101
+kube-2 ansible_host=10.10.1.102
+kube-3 ansible_host=10.10.1.103
+kube-4 ansible_host=10.10.1.104

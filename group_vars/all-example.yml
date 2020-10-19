@@ -1,0 +1,48 @@
+# user vars
+# This gets username and path to the SSH public key via environment variables.  Replace
+# with hardcoded values or other means if you prefer.
+pi_user: "{{ lookup('env','USER') }}"
+pi_password: "secret"
+ssh_key_location: "{{ lookup('env','HOME') }}/.ssh/id_rsa.pub"
+
+# locale vars
+locale: 'en_US.UTF-8'
+charset: 'UTF-8'
+timezone: 'US/Pacific' 
+
+# networking vars
+pi_ip_gateway: 10.10.1.1
+
+pi_domain: cooldomain.com  
+
+# Mapping of what hardware MAC addresses should be configured with specific IPs.
+mac_address_mapping:
+  "b8:27:eb:0a:56:72":
+    name: control.{{ pi_domain }}
+    ip: "10.10.1.10"  
+  "b8:27:eb:a4:1d:93":
+    name: kube-0.{{ pi_domain }}
+    ip: "10.10.1.100"
+  "b8:27:eb:98:1e:25":
+    name: kube-1.{{ pi_domain }}
+    ip: "10.10.1.101"
+  "b8:27:eb:fb:63:08":
+    name: kube-2.{{ pi_domain }}
+    ip: "10.10.1.102"
+  "b8:27:eb:a9:7c:e9":
+    name: kube-3.{{ pi_domain }}
+    ip: "10.10.1.103"
+  "b8:27:eb:2a:ad:76":
+    name: kube-4.{{ pi_domain }}
+    ip: "10.10.1.104"
+      
+      
+# Nameservers to use in resolv.conf.
+dns_nameservers:
+  - "8.8.8.8"
+  - "8.8.4.4"
+
+
+# NFS configuration.
+nfs_mount_dir: /mnt/homelab
+nfs_server_ip: 10.10.1.10
