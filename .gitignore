@@ -1,3 +1,5 @@
 *.retry
 all.yml
 controller.yml
+domain.crt
+domain.key
