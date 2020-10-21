@@ -17,3 +17,12 @@
       - nfs-common
       - rpcbind
     state: present
+
+- name: Install Docker everywhere
+  shell: 'curl -sSL https://get.docker.com | sh'
+
+- name: adding existing user '{{ pi_user }}' to docker group 
+  user:
+    name: '{{ pi_user }}'
+    groups: docker
+    append: yes  
