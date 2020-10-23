@@ -33,4 +33,5 @@
   roles:
     - kube-common
 
-#- import_playbook: kube.yml
+- import_playbook: kube.yml
+- import_playbook: docker.yml
