@@ -36,7 +36,9 @@ mac_address_mapping:
     name: kube-4.{{ pi_domain }}
     ip: "10.10.1.104"
       
-      
+# Install the docker registry on the control Pi.
+docker_registry_host: control.cooldomain.com:5000
+
 # Nameservers to use in resolv.conf.
 dns_nameservers:
   - "8.8.8.8"
