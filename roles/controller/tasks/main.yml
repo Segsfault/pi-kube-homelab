@@ -4,7 +4,7 @@
   package:
     name:
       - rpcbind
-      - nfs-common 
+      - nfs-common
       - nfs-kernel-server
     state: present
 
