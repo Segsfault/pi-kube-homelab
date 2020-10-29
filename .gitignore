@@ -3,4 +3,3 @@ all.yml
 controller.yml
 domain.crt
 domain.key
-k3s-manifests/

@@ -1,0 +1,37 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: grafana-deployment
+  namespace: monitoring
+  labels:
+    app: grafana-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana-server
+  template:
+    metadata:
+      labels:
+        app: grafana-server
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana
+        env:
+        - name: GF_PATHS_DATA
+          value: "/mnt/k3s/grafana/data"
+        ports:
+          - containerPort: 3000
+        resources:
+          requests:
+            cpu: 100m
+        volumeMounts:
+          - name: mnt
+            mountPath: /mnt
+      volumes:
+      - name: mnt
+        persistentVolumeClaim:
+          claimName: nfs-pvc
+  

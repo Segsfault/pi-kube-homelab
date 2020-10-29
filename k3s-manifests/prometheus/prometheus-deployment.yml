@@ -1,0 +1,36 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: prometheus-deployment
+  namespace: monitoring
+  labels:
+    app: prometheus-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-server
+  template:
+    metadata:
+      labels:
+        app: prometheus-server
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus
+        args:
+          - "--config.file=/mnt/k3s/prometheus/prometheus.yml"
+          - "--storage.tsdb.path=/mnt/k3s/prometheus/data/"
+        ports:
+          - containerPort: 9090
+        resources:
+          requests:
+            cpu: 100m
+        volumeMounts:
+          - name: mnt
+            mountPath: /mnt
+      volumes:
+      - name: mnt
+        persistentVolumeClaim:
+          claimName: nfs-pvc

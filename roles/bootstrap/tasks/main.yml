@@ -47,4 +47,4 @@
     state: directory
     owner: root
     group: nfs
-    mode: 0775
+    mode: 0777 # not ideal but makes it easier for k8s apps to write to nfs.
