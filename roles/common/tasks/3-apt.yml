@@ -14,6 +14,4 @@
   package:
     name: 
       - supervisor
-      - nfs-common
-      - rpcbind
     state: present
