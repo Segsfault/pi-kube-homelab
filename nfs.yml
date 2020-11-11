@@ -1,0 +1,74 @@
+- hosts: all
+  become: yes
+  tasks:
+  - name: adding the NFS group     
+    group:
+      name: nfs
+      gid: 1701
+      state: present
+
+  - name: adding existing user '{{ pi_user }}' to NFS group 
+    user:
+      name: '{{ pi_user }}'
+      groups: nfs
+      append: yes      
+
+  - name: Ensure NFS share and mount directories exist.
+    file:
+      path: "{{ nfs_mount_dir }}"
+      state: directory
+      owner: root
+      group: nfs
+      mode: 0777 # not ideal but makes it easier for k8s apps to write to nfs.
+
+  - name: Install some needed packages
+    become: yes
+    package:
+      name: 
+        - nfs-common
+        - rpcbind
+      state: present
+
+- hosts: controller
+  become: yes
+  tasks:
+  - name: Install some needed packages if they aren't already
+    become: yes
+    package:
+      name:
+        - rpcbind
+        - nfs-common
+        - nfs-kernel-server
+      state: present      
+
+  - name: Mounting "{{ storage_uuid }}" to "{{ storage_mount }}"
+    become: yes
+    mount:
+      path: "{{ storage_mount }}"
+      src: "UUID={{ storage_uuid }}"
+      fstype: ext4
+      opts: defaults
+      state: mounted
+    
+  - name: Change exports file for nfs
+    become: yes
+    lineinfile:
+      path: /etc/exports
+      line: "{{ nfs_export }}"    
+    
+  - name: Restart NFS
+    become: yes
+    service:
+      name: nfs-server
+      state: restarted    
+
+- hosts: kube_master:kube_workers
+  become: yes
+  tasks:
+  - name: Mounting NFS Share
+    mount:
+      path: "{{ nfs_mount_dir }}"
+      src: "{{ nfs_server_ip }}:{{ nfs_mount_dir }}"
+      fstype: nfs
+      opts: defaults
+      state: mounted

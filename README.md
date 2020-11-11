@@ -33,3 +33,17 @@ Feel free to modify or delete entries entirely from the `main.yml` files. For ex
 wifi, edit the `disable_hardware.yml` file or comment/delete the reference in `main.yml`.
 
 When ready, run `ansible-playbook -i hosts pi-setup.yml` to fully configure the pi(s)
+
+
+sudo apt install xserver-xorg
+sudo apt install raspberrypi-ui-mods
+sudo apt-get install xdotool unclutter sed
+sudo apt install chromium-browser -y
+edit /etc/lightdm/lightdm.conf to add autologin user
+run raspi-config to set autologin
+
+add
+/etc/xdg/lxsession/LXDE
+@xset s off 
+@xset -dpms
+

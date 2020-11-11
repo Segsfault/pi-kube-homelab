@@ -1,4 +1,3 @@
-# This gets installed in the nfs drive at: k3s/prometheus/prometheus.yml
 global:
   scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
   evaluation_interval: 60s # Evaluate rules every 60 seconds. The default is every 1 minute.
@@ -8,11 +7,49 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090']
 
-  - job_name: 'node_exporter'
+  - job_name: 'linux'
     static_configs:
-    - targets: ['10.10.1.10:9100']
-    - targets: ['10.10.1.100:9100']
-    - targets: ['10.10.1.101:9100']
-    - targets: ['10.10.1.102:9100']
-    - targets: ['10.10.1.103:9100']
-    - targets: ['10.10.1.104:9100']
+      - targets:
+        - 'kube-0:9100'
+        - 'kube-1:9100'
+        - 'kube-2:9100'
+        - 'kube-3:9100'
+        - 'kube-4:9100'
+        labels:
+          network: segsfault
+          os: "Raspbian GNU/Linux 10 (buster)"
+      - targets:
+        - 'control.cb.local:9100'
+        labels:
+          network: cb.local
+          os: "Raspbian GNU/Linux 10 (buster)"
+      - targets:
+        - 'codex.cb.local:9100'
+        labels:
+          network: cb.local
+          os: "Ubuntu 18.04.5 LTS" 
+
+  - job_name: 'windows'
+    static_configs:
+      - targets:
+        - 'brittania.cb.local:9182'
+        - 'brittania.cb.local:4445'
+        labels:
+          network: cb.local
+          os: "Windows 10 Pro"
+
+  - job_name: 'osx'
+    static_configs:
+      - targets:
+        - 'enterprise.cb.local:9100'
+        - 'aaron.cb.local:9100'
+        labels:
+          network: cb.local
+          os: "Mac OS X"          
+
+relabel_configs:
+  - source_labels: ['__address__']
+    separator:     ':'
+    regex:         '(.*):.*'
+    target_label:  'hostname'
+    replacement:   '${1}'

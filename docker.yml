@@ -1,10 +1,10 @@
 - name: Install and configure Docker for insecure registry
-  hosts: all
+  hosts: controller
   become: yes
   vars:
     ansible_user: "{{ pi_user }}"
   tasks:
-  - name: Install Docker everywhere
+  - name: Install Docker 
     shell: 'curl -sSL https://get.docker.com | sh'
   
   - name: adding existing user '{{ pi_user }}' to docker group 
@@ -28,10 +28,6 @@
       name: docker
       state: restarted  
 
-- name: Stand up registry on controller
-  hosts: controller
-  become: yes
-  tasks:
   - name: Create registry directory
     file:
       path: /docker_registry
@@ -40,7 +36,7 @@
 
   - name: Install pip
     apt:
-      name: python3-pip
+      name: python-pip
       state: present
 
   - name: Install docker python package for ansible
@@ -59,29 +55,6 @@
       ports:
         - "5000:5000"
  
-
-
-- name: Stand up registry on controller
-  hosts: kube_master:kube_workers
-  become: yes
-  tasks:
-  - name: Create k3s directory if it does't exist
-    file:
-      path: /etc/rancher/k3s/
-      state: directory
-      mode: '0755'
-        
-  - name: Configure for insecure local docker registry
-    copy:
-        content: |
-          mirrors:
-            segsfault.com:
-              endpoint:
-                - "http://{{ docker_registry_host }}"
-        dest: "/etc/rancher/k3s/registries.yaml"
-        owner: "root"
-        group: "root"
-        mode: 0644
 
             
          

@@ -15,18 +15,6 @@
     backup: yes
     validate: 'visudo -q -c -f %s'
 
-- name: adding the NFS group     
-  group:
-    name: nfs
-    gid: 1701
-    state: present    
-
-- name: adding existing user '{{ pi_user }}' to NFS group 
-  user:
-    name: '{{ pi_user }}'
-    groups: nfs
-    append: yes
-
 - name: Configure easier ls via bash
   become: yes
   lineinfile:
@@ -40,11 +28,3 @@
     user: "{{ pi_user }}"
     state: present
     key: "{{ lookup('file', '{{ ssh_key_location }}') }}"   
-
-- name: Ensure NFS share and mount directories exist.
-  file:
-    path: "{{ nfs_mount_dir }}"
-    state: directory
-    owner: root
-    group: nfs
-    mode: 0777 # not ideal but makes it easier for k8s apps to write to nfs.
